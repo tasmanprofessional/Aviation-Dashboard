@@ -534,7 +534,7 @@
 
     async function fetchAndRender() {
   try {
-    const PROXY = "https://corsproxy.io/?";
+    const PROXY = "https://api.allorigins.win/raw?url=";
     const TARGET = encodeURIComponent("https://opensky-network.org/api/states/all");
     const res = await fetch(PROXY + TARGET);
     if (!res.ok) throw new Error('API error ' + res.status);
