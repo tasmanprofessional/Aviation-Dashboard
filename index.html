@@ -378,7 +378,7 @@
 
   <main class="main">
     <div class="topbar">
-      <div class="page-title">Operations Overview</div>
+      <div class="page-title">European Aviation Operations</div>
       <div class="topbar-right">
         <div class="status"><div class="dot"></div> Live</div>
         <div class="utc-clock" id="clock">UTC 00:00:00</div>
@@ -393,7 +393,7 @@
         <div class="kpi">
           <i class="ti ti-plane kpi-icon"></i>
           <div>
-            <div class="kpi-label">Flights Currently in the Sky</div>
+            <div class="kpi-label">European Flights Currently Airborne</div>
             <div class="kpi-value" id="kpi-total">—</div>
             <div class="kpi-sub">Tracked Globally · Updates every 60 seconds</div>
           </div>
@@ -531,9 +531,17 @@ async function loadDashboard(){
 
     const res = await fetch('/api/europe');
 
-    const json = await res.json();
+const text = await res.text();
 
-    const aircraft = json.aircraft || [];
+const json = JSON.parse(text);
+
+const aircraft = (json.ac || []).filter(ac => {
+  if (ac.alt_baro === 'ground') return false;
+
+  const alt = Number(ac.alt_baro);
+
+  return !isNaN(alt) && alt > 0;
+});
 
     document.getElementById('kpi-total').textContent =
       aircraft.length.toLocaleString();
