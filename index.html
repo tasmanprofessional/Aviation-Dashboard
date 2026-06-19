@@ -535,7 +535,7 @@
     async function fetchAndRender() {
       try {
       const url = "https://opensky-network.org/api/states/all";
-        const res = await fetch(url);
+        const res = await fetch(url, { mode: 'cors' })
         if (!res.ok) throw new Error('API error ' + res.status);
         const json = await res.json();
 
