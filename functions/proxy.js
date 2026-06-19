@@ -2,7 +2,7 @@ export async function onRequest(context) {
   try {
     const response = await fetch("https://opensky-network.org/api/states/all", {
       headers: {
-        "Authorization": "Basic " + btoa("tasmanprofessional:YOUR_PASSWORD_HERE"),
+        "Authorization": "Basic " + btoa("tasmanprofessional:Lemons11"),
         "User-Agent": "Mozilla/5.0",
         "Accept": "application/json"
       }
