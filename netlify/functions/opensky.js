@@ -9,41 +9,51 @@ exports.handler = async function () {
       `${username}:${password}`
     ).toString("base64");
 
+
     const response = await fetch(
       "https://opensky-network.org/api/states/all",
       {
+        method: "GET",
         headers: {
-          Authorization: `Basic ${auth}`
+          "Authorization": `Basic ${auth}`,
+          "User-Agent": "Mozilla/5.0"
         }
       }
     );
 
+
+    const text = await response.text();
+
+
     if (!response.ok) {
+
       return {
         statusCode: response.status,
         body: JSON.stringify({
-          error: "OpenSky error",
-          status: response.status
+          error: "OpenSky rejected request",
+          response: text
         })
       };
+
     }
 
-    const data = await response.json();
 
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify(data)
+      body: text
     };
+
 
   } catch (error) {
 
     return {
       statusCode: 500,
       body: JSON.stringify({
-        error: error.message
+        error: error.message,
+        stack: error.stack
       })
     };
 
