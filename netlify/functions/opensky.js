@@ -5,15 +5,21 @@ exports.handler = async function () {
 
   try {
 
+    const auth = Buffer
+      .from(username + ":" + password)
+      .toString("base64");
+
     const response = await fetch(
-      "https://" +
-      username +
-      ":" +
-      password +
-      "@opensky-network.org/api/states/all"
+      "https://opensky-network.org/api/states/all",
+      {
+        headers: {
+          "Authorization": "Basic " + auth
+        }
+      }
     );
 
     if (!response.ok) {
+
       return {
         statusCode: response.status,
         body: JSON.stringify({
@@ -21,6 +27,7 @@ exports.handler = async function () {
           status: response.status
         })
       };
+
     }
 
     const data = await response.json();
@@ -32,6 +39,7 @@ exports.handler = async function () {
       },
       body: JSON.stringify(data)
     };
+
 
   } catch (err) {
 
