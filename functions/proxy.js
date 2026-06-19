@@ -1,7 +1,7 @@
 export async function onRequest(context) {
   try {
     const username = "tasmanprofessional";
-    const password = "YOUR_PASSWORD_HERE";
+    const password = "Lemons11";
     const credentials = username + ":" + password;
     
     // Encode manually without btoa
