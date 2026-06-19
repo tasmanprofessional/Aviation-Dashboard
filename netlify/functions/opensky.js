@@ -2,17 +2,12 @@ exports.handler = async function () {
 
   try {
 
-    const response = await fetch(
-      "https://opensky-network.org/api/states/all"
-    );
+    const response = await fetch("https://api.github.com");
 
     const data = await response.text();
 
     return {
-      statusCode: response.status,
-      headers: {
-        "Content-Type": "application/json"
-      },
+      statusCode: 200,
       body: data
     };
 
@@ -20,9 +15,7 @@ exports.handler = async function () {
 
     return {
       statusCode: 500,
-      body: JSON.stringify({
-        error: error.message
-      })
+      body: error.message
     };
 
   }
