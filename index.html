@@ -534,12 +534,7 @@
 
     async function fetchAndRender() {
       try {
-        const res = await fetch("https://adsbexchange-com1.p.rapidapi.com/v2/live/icao/all/", {
-  headers: {
-    "x-rapidapi-host": "adsbexchange-com1.p.rapidapi.com",
-    "x-rapidapi-key": "015dbe7124msh7e3b3889ade23abp1635fejsn738983cefd53"
-  }
-});
+        const res = await fetch("/proxy");
         if (!res.ok) throw new Error('API error ' + res.status);
         const json = await res.json();
 
