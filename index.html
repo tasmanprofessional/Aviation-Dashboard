@@ -335,11 +335,6 @@
 </head>
 <body>
 
- <script>
-  const OPENSKY_USERNAME = "";
-  const OPENSKY_PASSWORD = "";
-</script>
-  
   <aside class="sidebar">
     <div class="logo">
       <div class="logo-name">Dash</div>
@@ -539,7 +534,7 @@
 
     async function fetchAndRender() {
       try {
-        const url = "/.netlify/functions/opensky";
+      const url = "https://opensky-network.org/api/states/all";
         const res = await fetch(url);
         if (!res.ok) throw new Error('API error ' + res.status);
         const json = await res.json();
