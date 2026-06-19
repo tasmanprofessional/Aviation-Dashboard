@@ -168,7 +168,7 @@
 
     .kpi-row {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(1, 1fr);
       gap: 1px;
       background: #E8E4DC;
       border: 1px solid #E8E4DC;
@@ -177,7 +177,16 @@
 
     .kpi {
       background: #FAFAF7;
-      padding: 20px 18px;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .kpi-icon {
+      font-size: 32px;
+      color: #006039;
+      opacity: 0.4;
     }
 
     .kpi-label {
@@ -185,16 +194,16 @@
       letter-spacing: 2px;
       text-transform: uppercase;
       color: #9A9488;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .kpi-value {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 32px;
+      font-size: 48px;
       font-weight: 400;
       color: #1A1A1A;
       line-height: 1;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .kpi-sub {
@@ -206,7 +215,7 @@
 
     .panel-row {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 16px;
       margin-bottom: 16px;
     }
@@ -214,12 +223,6 @@
     .panel {
       background: #FAFAF7;
       border: 1px solid #E8E4DC;
-    }
-
-    .panel-full {
-      background: #FAFAF7;
-      border: 1px solid #E8E4DC;
-      margin-bottom: 16px;
     }
 
     .panel-header {
@@ -249,7 +252,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 180px;
+      height: 160px;
       gap: 10px;
       color: #9A9488;
       font-size: 10px;
@@ -268,65 +271,67 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    .error-state {
+    .rank-list { display: flex; flex-direction: column; gap: 0; }
+
+    .rank-item {
       display: flex;
       align-items: center;
-      justify-content: center;
-      height: 180px;
-      font-size: 10px;
-      letter-spacing: 1px;
-      color: #C9A84C;
-      text-transform: uppercase;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .acft-table { width: 100%; border-collapse: collapse; }
-
-    .acft-table th {
-      font-size: 8px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #9A9488;
-      text-align: left;
-      padding: 0 0 10px;
-      border-bottom: 1px solid #E8E4DC;
-      font-weight: 400;
-    }
-
-    .acft-table th:last-child { text-align: right; }
-
-    .acft-table td {
-      padding: 9px 0;
+      gap: 12px;
+      padding: 10px 0;
       border-bottom: 1px solid #F5F0E8;
-      font-size: 12px;
-      color: #3A3830;
-      vertical-align: middle;
     }
 
-    .acft-table td:last-child { text-align: right; }
-    .acft-table tr:last-child td { border-bottom: none; }
+    .rank-item:last-child { border-bottom: none; }
 
-    .acft-type {
+    .rank-num {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 15px;
+      font-size: 18px;
+      font-weight: 300;
+      color: #C9A84C;
+      width: 20px;
+      flex-shrink: 0;
+      text-align: center;
+    }
+
+    .rank-info { flex: 1; min-width: 0; }
+
+    .rank-name {
+      font-size: 12px;
+      color: #1A1A1A;
       font-weight: 500;
-      color: #006039;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
     }
 
-    .acft-bar-wrap {
-      width: 100px;
-      height: 3px;
+    .rank-bar-track {
+      height: 2px;
       background: #E8E4DC;
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 8px;
+      width: 100%;
     }
 
-    .acft-bar-fill { height: 100%; background: #006039; }
-    .acft-count { font-size: 11px; color: #6A6458; font-variant-numeric: tabular-nums; }
+    .rank-bar-fill {
+      height: 100%;
+      background: #006039;
+    }
 
-    .chart-wrap { position: relative; height: 220px; }
+    .rank-count {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px;
+      font-weight: 400;
+      color: #006039;
+      flex-shrink: 0;
+    }
+
+    .updated {
+      font-size: 9px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #C8C4BC;
+      text-align: right;
+      margin-top: 16px;
+    }
 
     ::-webkit-scrollbar { width: 3px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -383,67 +388,69 @@
     <div class="content">
       <div class="gold-rule"></div>
 
+      <!-- FLIGHTS IN THE SKY KPI -->
       <div class="kpi-row">
         <div class="kpi">
-          <div class="kpi-label">Aircraft Airborne</div>
-          <div class="kpi-value" id="kpi-total">—</div>
-          <div class="kpi-sub">Worldwide Now</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Countries Active</div>
-          <div class="kpi-value" id="kpi-countries">—</div>
-          <div class="kpi-sub">Origin Nations</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Callsign Prefixes</div>
-          <div class="kpi-value" id="kpi-types">—</div>
-          <div class="kpi-sub">Distinct Operators</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">On Ground</div>
-          <div class="kpi-value" id="kpi-ground">—</div>
-          <div class="kpi-sub">Tracked Stationary</div>
-        </div>
-      </div>
-
-      <div class="panel-full">
-        <div class="panel-header">
-          <div class="panel-title"><i class="ti ti-plane"></i> Top Aircraft Operators — Currently Airborne</div>
-          <div class="panel-meta" id="acft-updated">Fetching...</div>
-        </div>
-        <div class="panel-body" id="acft-table-wrap">
-          <div class="loading-state">
-            <div class="loading-spinner"></div>
-            Fetching live data
+          <i class="ti ti-plane kpi-icon"></i>
+          <div>
+            <div class="kpi-label">Flights Currently in the Sky</div>
+            <div class="kpi-value" id="kpi-total">—</div>
+            <div class="kpi-sub">Tracked Globally · Updates every 60 seconds</div>
           </div>
         </div>
       </div>
 
+      <!-- THREE PANELS -->
       <div class="panel-row">
+
+        <!-- TOP 5 AIRLINES -->
         <div class="panel">
           <div class="panel-header">
-            <div class="panel-title"><i class="ti ti-chart-bar"></i> Long Haul Operators</div>
-            <div class="panel-meta">Wide-body airlines</div>
+            <div class="panel-title"><i class="ti ti-building"></i> Top 5 Airlines</div>
+            <div class="panel-meta">Most airborne</div>
           </div>
           <div class="panel-body">
-            <div class="chart-wrap"><canvas id="chart-longhaul"></canvas></div>
+            <div id="airlines-list">
+              <div class="loading-state"><div class="loading-spinner"></div>Fetching</div>
+            </div>
           </div>
         </div>
+
+        <!-- TOP 5 SHORT HAUL -->
         <div class="panel">
           <div class="panel-header">
-            <div class="panel-title"><i class="ti ti-chart-bar"></i> Short Haul Operators</div>
-            <div class="panel-meta">Narrow-body airlines</div>
+            <div class="panel-title"><i class="ti ti-plane"></i> Top 5 Short Haul</div>
+            <div class="panel-meta">Aircraft types</div>
           </div>
           <div class="panel-body">
-            <div class="chart-wrap"><canvas id="chart-shorthaul"></canvas></div>
+            <div id="shorthaul-list">
+              <div class="loading-state"><div class="loading-spinner"></div>Fetching</div>
+            </div>
           </div>
         </div>
+
+        <!-- TOP 5 LONG HAUL -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title"><i class="ti ti-plane"></i> Top 5 Long Haul</div>
+            <div class="panel-meta">Aircraft types</div>
+          </div>
+          <div class="panel-body">
+            <div id="longhaul-list">
+              <div class="loading-state"><div class="loading-spinner"></div>Fetching</div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+      <div class="updated" id="last-updated">Awaiting data...</div>
 
     </div>
   </main>
 
   <script>
+    // ── CLOCK ──
     function updateClock() {
       const n = new Date();
       const t = [n.getUTCHours(), n.getUTCMinutes(), n.getUTCSeconds()]
@@ -453,6 +460,7 @@
     updateClock();
     setInterval(updateClock, 1000);
 
+    // ── NAV ──
     document.querySelectorAll('.nav-item').forEach(el => {
       el.addEventListener('click', e => {
         e.preventDefault();
@@ -461,140 +469,152 @@
       });
     });
 
-    let longHaulChart = null;
-    let shortHaulChart = null;
-
-    const CHART_COLORS = ['#006039','#007A47','#009455','#00AE63','#C9A84C','#D4B96A','#DFCA88'];
-
-    function makeChart(canvasId, labels, data) {
-      const ctx = document.getElementById(canvasId).getContext('2d');
-      return new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels,
-          datasets: [{ data, backgroundColor: CHART_COLORS, borderWidth: 0, borderRadius: 2 }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' aircraft' },
-              backgroundColor: '#1A1A1A',
-              titleColor: '#C9A84C',
-              bodyColor: '#F5F0E8',
-              titleFont: { size: 11, family: 'Inter' },
-              bodyFont: { size: 11, family: 'Inter' },
-              padding: 10,
-              cornerRadius: 2,
-            }
-          },
-          scales: {
-            x: {
-              grid: { display: false },
-              border: { display: false },
-              ticks: { color: '#9A9488', font: { size: 10, family: 'Inter' }, maxRotation: 0 }
-            },
-            y: {
-              grid: { color: '#F0ECE4' },
-              border: { display: false },
-              ticks: { color: '#9A9488', font: { size: 10, family: 'Inter' }, maxTicksLimit: 5 }
-            }
-          }
-        }
-      });
-    }
-
-    function updateChart(chart, canvasId, labels, data) {
-      if (chart) {
-        chart.data.labels = labels;
-        chart.data.datasets[0].data = data;
-        chart.update();
-        return chart;
-      }
-      return makeChart(canvasId, labels, data);
-    }
-
-    const LONG_HAUL_PREFIXES = {
-      'UAE': 'Emirates',   'QFA': 'Qantas',    'SIA': 'Singapore',
-      'BAW': 'British',    'DLH': 'Lufthansa', 'AFR': 'Air France',
-      'AAL': 'American',   'UAL': 'United',    'DAL': 'Delta',
-      'CPA': 'Cathay',     'KAL': 'Korean',    'JAL': 'Japan Air',
-      'ANA': 'ANA',        'ETH': 'Ethiopian', 'KLM': 'KLM'
+    // ── AIRLINE CALLSIGN MAP ──
+    const AIRLINE_MAP = {
+      'AAL': 'American Airlines',    'UAL': 'United Airlines',
+      'DAL': 'Delta Air Lines',      'SWA': 'Southwest',
+      'RYR': 'Ryanair',             'EZY': 'easyJet',
+      'UAE': 'Emirates',             'QFA': 'Qantas',
+      'SIA': 'Singapore Airlines',   'BAW': 'British Airways',
+      'DLH': 'Lufthansa',           'AFR': 'Air France',
+      'KLM': 'KLM',                 'ANA': 'ANA',
+      'JAL': 'Japan Airlines',       'CPA': 'Cathay Pacific',
+      'IGO': 'IndiGo',              'AXM': 'AirAsia',
+      'THA': 'Thai Airways',         'ETH': 'Ethiopian',
+      'MSR': 'EgyptAir',            'SVA': 'Saudia',
+      'THY': 'Turkish Airlines',     'AFL': 'Aeroflot',
+      'CSN': 'China Southern',       'CCA': 'Air China',
+      'CHH': 'Hainan Airlines',      'CES': 'China Eastern',
+      'KAL': 'Korean Air',           'AAR': 'Asiana',
+      'VOZ': 'Virgin Australia',     'JST': 'Jetstar',
+      'WJA': 'WestJet',             'NKS': 'Spirit',
+      'FFT': 'Frontier',            'WZZ': 'Wizz Air',
+      'VLG': 'Vueling',             'IBE': 'Iberia',
+      'TAP': 'TAP Portugal',         'EIN': 'Aer Lingus',
+      'TOM': 'TUI Airways',          'EXS': 'Jet2',
     };
 
-    const SHORT_HAUL_PREFIXES = {
-      'RYR': 'Ryanair',  'EZY': 'easyJet',  'SWA': 'Southwest',
-      'IGO': 'IndiGo',   'AXM': 'AirAsia',  'VOZ': 'Virgin AU',
-      'JST': 'Jetstar',  'NKS': 'Spirit',   'FFT': 'Frontier',
-      'WJA': 'WestJet',  'VLG': 'Vueling',  'IBE': 'Iberia Ex',
-      'WZZ': 'Wizz Air', 'BTI': 'airBaltic','EJU': 'easyJet EU'
+    // ── AIRCRAFT TYPE MAP ──
+    const SHORT_HAUL_TYPES = {
+      'B737': 'Boeing 737',    'B738': 'Boeing 737-800',
+      'B739': 'Boeing 737-900','B38M': 'Boeing 737 MAX 8',
+      'B39M': 'Boeing 737 MAX 9',
+      'A318': 'Airbus A318',   'A319': 'Airbus A319',
+      'A320': 'Airbus A320',   'A321': 'Airbus A321',
+      'A20N': 'Airbus A320neo','A21N': 'Airbus A321neo',
+      'E170': 'Embraer 170',   'E175': 'Embraer 175',
+      'E190': 'Embraer 190',   'E195': 'Embraer 195',
+      'CRJ2': 'CRJ-200',       'CRJ7': 'CRJ-700',
+      'CRJ9': 'CRJ-900',       'DH8D': 'Dash 8-400',
+      'AT76': 'ATR 72-600',    'B712': 'Boeing 717',
     };
 
+    const LONG_HAUL_TYPES = {
+      'B744': 'Boeing 747-400', 'B748': 'Boeing 747-8',
+      'B772': 'Boeing 777-200', 'B773': 'Boeing 777-300',
+      'B77W': 'Boeing 777-300ER','B788': 'Boeing 787-8',
+      'B789': 'Boeing 787-9',   'B78X': 'Boeing 787-10',
+      'A332': 'Airbus A330-200','A333': 'Airbus A330-300',
+      'A338': 'Airbus A330-800','A339': 'Airbus A330-900',
+      'A343': 'Airbus A340-300','A345': 'Airbus A340-500',
+      'A346': 'Airbus A340-600','A359': 'Airbus A350-900',
+      'A35K': 'Airbus A350-1000','A388': 'Airbus A380',
+      'B762': 'Boeing 767-200', 'B763': 'Boeing 767-300',
+    };
+
+    // ── RENDER RANK LIST ──
+    function renderList(containerId, items) {
+      const max = items[0]?.[1] || 1;
+      document.getElementById(containerId).innerHTML = `
+        <div class="rank-list">
+          ${items.map(([name, count], i) => `
+            <div class="rank-item">
+              <div class="rank-num">${i + 1}</div>
+              <div class="rank-info">
+                <div class="rank-name">${name}</div>
+                <div class="rank-bar-track">
+                  <div class="rank-bar-fill" style="width:${Math.round((count/max)*100)}%"></div>
+                </div>
+              </div>
+              <div class="rank-count">${count.toLocaleString()}</div>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    // ── FETCH & RENDER ──
     async function fetchAndRender() {
       try {
         const res = await fetch("/proxy");
         if (!res.ok) throw new Error('API error ' + res.status);
         const json = await res.json();
 
-        const states   = json.states || [];
-        const airborne = (json.ac || []).filter(s => s.alt_baro !== "ground");
-        const onGround = (json.ac || []).filter(s => s.alt_baro === "ground");
-        const countries = new Set(airborne.map(s => s.r).filter(Boolean));
+        const aircraft = json.ac || [];
+        const airborne = aircraft.filter(a => a.alt_baro !== "ground" && a.alt_baro > 0);
 
-        const typeCounts = {};
-        airborne.forEach(s => {
-          const callsign = (s.flight || '').trim();;
-          if (!callsign) return;
-          const prefix = callsign.substring(0, 3).toUpperCase();
-          typeCounts[prefix] = (typeCounts[prefix] || 0) + 1;
+        // Total count
+        document.getElementById('kpi-total').textContent = airborne.length.toLocaleString();
+
+        // ── TOP 5 AIRLINES ──
+        const airlineCounts = {};
+        airborne.forEach(a => {
+          const cs = (a.flight || '').trim().substring(0, 3).toUpperCase();
+          if (!cs || cs.length < 3) return;
+          const name = AIRLINE_MAP[cs] || cs;
+          airlineCounts[name] = (airlineCounts[name] || 0) + 1;
         });
+        const top5Airlines = Object.entries(airlineCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+        renderList('airlines-list', top5Airlines);
 
-        const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]).slice(0, 20);
+        // ── TOP 5 SHORT HAUL ──
+        const shortCounts = {};
+        airborne.forEach(a => {
+          const type = (a.t || '').trim().toUpperCase();
+          if (SHORT_HAUL_TYPES[type]) {
+            const name = SHORT_HAUL_TYPES[type];
+            shortCounts[name] = (shortCounts[name] || 0) + 1;
+          }
+        });
+        const top5Short = Object.entries(shortCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+        renderList('shorthaul-list', top5Short.length ? top5Short : [['No data', 0]]);
 
-        document.getElementById('kpi-total').textContent     = airborne.length.toLocaleString();
-        document.getElementById('kpi-countries').textContent = countries.size.toLocaleString();
-        document.getElementById('kpi-types').textContent     = Object.keys(typeCounts).length.toLocaleString();
-        document.getElementById('kpi-ground').textContent    = onGround.length.toLocaleString();
+        // ── TOP 5 LONG HAUL ──
+        const longCounts = {};
+        airborne.forEach(a => {
+          const type = (a.t || '').trim().toUpperCase();
+          if (LONG_HAUL_TYPES[type]) {
+            const name = LONG_HAUL_TYPES[type];
+            longCounts[name] = (longCounts[name] || 0) + 1;
+          }
+        });
+        const top5Long = Object.entries(longCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 5);
+        renderList('longhaul-list', top5Long.length ? top5Long : [['No data', 0]]);
 
+        // Timestamp
         const now = new Date();
         const ts = [now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()]
           .map(v => String(v).padStart(2,'0')).join(':');
-        document.getElementById('acft-updated').textContent = 'Updated UTC ' + ts;
-
-        const maxCount = sorted[0]?.[1] || 1;
-        document.getElementById('acft-table-wrap').innerHTML = `
-          <table class="acft-table">
-            <thead><tr><th>Operator Prefix</th><th>Volume</th><th>Count</th></tr></thead>
-            <tbody>
-              ${sorted.map(([type, count]) => `
-                <tr>
-                  <td><span class="acft-type">${type}</span></td>
-                  <td><span class="acft-bar-wrap"><span class="acft-bar-fill" style="width:${Math.round((count/maxCount)*100)}%"></span></span></td>
-                  <td><span class="acft-count">${count.toLocaleString()}</span></td>
-                </tr>`).join('')}
-            </tbody>
-          </table>`;
-
-        longHaulChart  = updateChart(longHaulChart,  'chart-longhaul',
-          Object.values(LONG_HAUL_PREFIXES),
-          Object.keys(LONG_HAUL_PREFIXES).map(p => typeCounts[p] || 0));
-
-        shortHaulChart = updateChart(shortHaulChart, 'chart-shorthaul',
-          Object.values(SHORT_HAUL_PREFIXES),
-          Object.keys(SHORT_HAUL_PREFIXES).map(p => typeCounts[p] || 0));
+        document.getElementById('last-updated').textContent = 'Last updated UTC ' + ts;
 
       } catch (err) {
-        document.getElementById('acft-table-wrap').innerHTML =
-          `<div class="error-state">Unable to fetch data<br><br>${err.message}</div>`;
-        document.getElementById('acft-updated').textContent = 'Error';
+        document.getElementById('kpi-total').textContent = '—';
+        document.getElementById('last-updated').textContent = 'Error: ' + err.message;
       }
     }
 
+    // Fetch on load, then every 60 seconds to avoid rate limiting
     fetchAndRender();
-    setInterval(fetchAndRender, 30000);
-</script>
+    setInterval(fetchAndRender, 60000);
+  </script>
 
 </body>
 </html>
+```
+
+Commit this and tell me what you see!
