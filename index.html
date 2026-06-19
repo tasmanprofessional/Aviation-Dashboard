@@ -545,7 +545,7 @@
     // ── FETCH & RENDER ──
     async function fetchAndRender() {
       try {
-        const res = await fetch("/proxy");
+       const res = await fetch("/api/proxy");
         if (!res.ok) throw new Error('API error ' + res.status);
         const json = await res.json();
 
@@ -610,7 +610,7 @@
 
     // Fetch on load, then every 60 seconds to avoid rate limiting
     fetchAndRender();
-    setInterval(fetchAndRender, 60000);
+    setInterval(fetchAndRender, 300000);
   </script>
 
 </body>
