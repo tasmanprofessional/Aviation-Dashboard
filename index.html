@@ -534,7 +534,7 @@
 
     async function fetchAndRender() {
       try {
-        const res = await fetch("/proxy");
+        const res = await fetch("https://api.adsb.lol/v2/ladd");;
         if (!res.ok) throw new Error('API error ' + res.status);
         const json = await res.json();
 
