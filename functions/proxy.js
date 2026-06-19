@@ -1,27 +1,18 @@
 export async function onRequest(context) {
   try {
+    const credentials = "tasmanprofessional:YOUR_PASSWORD_HERE";
+    const encoded = Buffer.from(credentials).toString("base64");
+    
     const response = await fetch("https://opensky-network.org/api/states/all", {
       headers: {
-        "Authorization": "Basic " + btoa("tasmanprofessional:Lemons11")
+        "Authorization": "Basic " + encoded
       }
     });
     
     const text = await response.text();
-    
-    if (!response.ok) {
-      return new Response(JSON.stringify({ 
-        error: response.status, 
-        message: text 
-      }), {
-        status: 500,
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*"
-        }
-      });
-    }
 
     return new Response(text, {
+      status: response.status,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*"
