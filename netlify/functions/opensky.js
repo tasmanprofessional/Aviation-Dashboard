@@ -1,24 +1,31 @@
 exports.handler = async function () {
 
+  const username = "tasmanprofessional";
+  const password = "Lemons11";
+
   try {
+
+    const auth = Buffer
+      .from(`${username}:${password}`)
+      .toString("base64");
 
     const response = await fetch(
       "https://opensky-network.org/api/states/all",
       {
         headers: {
-          "User-Agent": "Aviation-Dashboard"
+          "Authorization": `Basic ${auth}`
         }
       }
     );
 
-    const text = await response.text();
+    const data = await response.text();
 
     return {
       statusCode: response.status,
       headers: {
         "Content-Type": "application/json"
       },
-      body: text
+      body: data
     };
 
   } catch (err) {
@@ -26,9 +33,8 @@ exports.handler = async function () {
     return {
       statusCode: 500,
       body: JSON.stringify({
-        name: err.name,
-        message: err.message,
-        cause: err.cause
+        error: "OpenSky connection failed",
+        message: err.message
       })
     };
 
