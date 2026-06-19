@@ -536,7 +536,11 @@
   try {
     const PROXY = "https://thingproxy.freeboard.io/fetch/";
     const TARGET = encodeURIComponent("https://opensky-network.org/api/states/all");
-    const res = await fetch(PROXY + TARGET);
+    const res = await fetch("https://opensky-network.org/api/states/all", {
+  headers: {
+    "Authorization": "Basic " + btoa("tasmanprofessional:YOUR_PASSWORD_HERE")
+  }
+});
     if (!res.ok) throw new Error('API error ' + res.status);
     const json = await res.json();
 
