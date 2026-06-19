@@ -533,65 +533,66 @@
     };
 
     async function fetchAndRender() {
-      try {
-      const url = "https://opensky-network.org/api/states/all";
-        const res = await fetch(url, { mode: 'cors' })
-        if (!res.ok) throw new Error('API error ' + res.status);
-        const json = await res.json();
+  try {
+    const PROXY = "https://corsproxy.io/?";
+    const TARGET = encodeURIComponent("https://opensky-network.org/api/states/all");
+    const res = await fetch(PROXY + TARGET);
+    if (!res.ok) throw new Error('API error ' + res.status);
+    const json = await res.json();
 
-        const states   = json.states || [];
-        const airborne = states.filter(s => !s[8]);
-        const onGround = states.filter(s => s[8]);
-        const countries = new Set(airborne.map(s => s[2]).filter(Boolean));
+    const states   = json.states || [];
+    const airborne = states.filter(s => !s[8]);
+    const onGround = states.filter(s => s[8]);
+    const countries = new Set(airborne.map(s => s[2]).filter(Boolean));
 
-        const typeCounts = {};
-        airborne.forEach(s => {
-          const callsign = (s[1] || '').trim();
-          if (!callsign) return;
-          const prefix = callsign.substring(0, 3).toUpperCase();
-          typeCounts[prefix] = (typeCounts[prefix] || 0) + 1;
-        });
+    const typeCounts = {};
+    airborne.forEach(s => {
+      const callsign = (s[1] || '').trim();
+      if (!callsign) return;
+      const prefix = callsign.substring(0, 3).toUpperCase();
+      typeCounts[prefix] = (typeCounts[prefix] || 0) + 1;
+    });
 
-        const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]).slice(0, 20);
+    const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]).slice(0, 20);
 
-        document.getElementById('kpi-total').textContent     = airborne.length.toLocaleString();
-        document.getElementById('kpi-countries').textContent = countries.size.toLocaleString();
-        document.getElementById('kpi-types').textContent     = Object.keys(typeCounts).length.toLocaleString();
-        document.getElementById('kpi-ground').textContent    = onGround.length.toLocaleString();
+    document.getElementById('kpi-total').textContent     = airborne.length.toLocaleString();
+    document.getElementById('kpi-countries').textContent = countries.size.toLocaleString();
+    document.getElementById('kpi-types').textContent     = Object.keys(typeCounts).length.toLocaleString();
+    document.getElementById('kpi-ground').textContent    = onGround.length.toLocaleString();
 
-        const now = new Date();
-        const ts = [now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()]
-          .map(v => String(v).padStart(2,'0')).join(':');
-        document.getElementById('acft-updated').textContent = 'Updated UTC ' + ts;
+    const now = new Date();
+    const ts = [now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()]
+      .map(v => String(v).padStart(2,'0')).join(':');
+    document.getElementById('acft-updated').textContent = 'Updated UTC ' + ts;
 
-        const maxCount = sorted[0]?.[1] || 1;
-        document.getElementById('acft-table-wrap').innerHTML = `
-          <table class="acft-table">
-            <thead><tr><th>Operator Prefix</th><th>Volume</th><th>Count</th></tr></thead>
-            <tbody>
-              ${sorted.map(([type, count]) => `
-                <tr>
-                  <td><span class="acft-type">${type}</span></td>
-                  <td><span class="acft-bar-wrap"><span class="acft-bar-fill" style="width:${Math.round((count/maxCount)*100)}%"></span></span></td>
-                  <td><span class="acft-count">${count.toLocaleString()}</span></td>
-                </tr>`).join('')}
-            </tbody>
-          </table>`;
+    const maxCount = sorted[0]?.[1] || 1;
+    document.getElementById('acft-table-wrap').innerHTML = `
+      <table class="acft-table">
+        <thead><tr><th>Operator Prefix</th><th>Volume</th><th>Count</th></tr></thead>
+        <tbody>
+          ${sorted.map(([type, count]) => `
+            <tr>
+              <td><span class="acft-type">${type}</span></td>
+              <td><span class="acft-bar-wrap"><span class="acft-bar-fill" style="width:${Math.round((count/maxCount)*100)}%"></span></span></td>
+              <td><span class="acft-count">${count.toLocaleString()}</span></td>
+            </tr>`).join('')}
+        </tbody>
+      </table>`;
 
-        longHaulChart  = updateChart(longHaulChart,  'chart-longhaul',
-          Object.values(LONG_HAUL_PREFIXES),
-          Object.keys(LONG_HAUL_PREFIXES).map(p => typeCounts[p] || 0));
+    longHaulChart  = updateChart(longHaulChart,  'chart-longhaul',
+      Object.values(LONG_HAUL_PREFIXES),
+      Object.keys(LONG_HAUL_PREFIXES).map(p => typeCounts[p] || 0));
 
-        shortHaulChart = updateChart(shortHaulChart, 'chart-shorthaul',
-          Object.values(SHORT_HAUL_PREFIXES),
-          Object.keys(SHORT_HAUL_PREFIXES).map(p => typeCounts[p] || 0));
+    shortHaulChart = updateChart(shortHaulChart, 'chart-shorthaul',
+      Object.values(SHORT_HAUL_PREFIXES),
+      Object.keys(SHORT_HAUL_PREFIXES).map(p => typeCounts[p] || 0));
 
-      } catch (err) {
-        document.getElementById('acft-table-wrap').innerHTML =
-          `<div class="error-state">Unable to fetch data — check credentials<br><br>${err.message}</div>`;
-        document.getElementById('acft-updated').textContent = 'Error';
-      }
-    }
+  } catch (err) {
+    document.getElementById('acft-table-wrap').innerHTML =
+      `<div class="error-state">Unable to fetch data<br><br>${err.message}</div>`;
+    document.getElementById('acft-updated').textContent = 'Error';
+  }
+}
 
     fetchAndRender();
     setInterval(fetchAndRender, 30000);
