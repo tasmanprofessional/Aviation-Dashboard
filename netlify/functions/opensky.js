@@ -1,32 +1,19 @@
 exports.handler = async function () {
 
-  const username = process.env.OPENSKY_USERNAME;
-  const password = process.env.OPENSKY_PASSWORD;
-
-  const auth = Buffer
-    .from(`${username}:${password}`)
-    .toString("base64");
-
   try {
 
     const response = await fetch(
-      "https://opensky-network.org/api/states/all",
-      {
-        headers: {
-          Authorization: `Basic ${auth}`
-        }
-      }
+      "https://opensky-network.org/api/states/all"
     );
 
-    const text = await response.text();
+    const data = await response.text();
 
     return {
       statusCode: response.status,
       headers: {
-        "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json"
       },
-      body: text
+      body: data
     };
 
   } catch (error) {
