@@ -1,23 +1,45 @@
 exports.handler = async function () {
 
+  const username = process.env.OPENSKY_USERNAME;
+  const password = process.env.OPENSKY_PASSWORD;
+
   try {
 
-    const response = await fetch("https://api.github.com");
+    const response = await fetch(
+      "https://" +
+      username +
+      ":" +
+      password +
+      "@opensky-network.org/api/states/all"
+    );
 
-    const text = await response.text();
+    if (!response.ok) {
+      return {
+        statusCode: response.status,
+        body: JSON.stringify({
+          error: "OpenSky error",
+          status: response.status
+        })
+      };
+    }
+
+    const data = await response.json();
 
     return {
       statusCode: 200,
-      body: text
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(data)
     };
 
-  } catch (error) {
+  } catch (err) {
 
     return {
       statusCode: 500,
       body: JSON.stringify({
-        error: error.message,
-        stack: error.stack
+        error: "fetch failed",
+        message: err.message
       })
     };
 
