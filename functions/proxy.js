@@ -1,7 +1,7 @@
 export async function onRequest(context) {
   try {
-    const credentials = "tasmanprofessional:YOUR_PASSWORD_HERE";
-    const encoded = Buffer.from(credentials).toString("base64");
+    const credentials = "tasmanprofessional:Lemons11";
+    const encoded = btoa(unescape(encodeURIComponent(credentials)));
     
     const response = await fetch("https://opensky-network.org/api/states/all", {
       headers: {
