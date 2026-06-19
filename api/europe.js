@@ -3,47 +3,36 @@ try {
 
 ```
 const response = await fetch(
-  "https://api.adsb.lol/v2/lat/51.47/lon/-0.45/dist/250",
-  {
-    headers: {
-      "User-Agent": "European-Aviation-Dashboard"
-    }
-  }
+  "https://api.adsb.lol/v2/lat/51.47/lon/-0.45/dist/250"
 );
 
-const data = await response.json();
+const text = await response.text();
 
-const aircraft = (data.ac || []).filter(ac => {
+const data = JSON.parse(text);
 
-  if (ac.alt_baro === "ground") {
-    return false;
-  }
+const aircraft = (data.ac || [])
+  .filter(ac => {
+    if (ac.alt_baro === "ground") return false;
 
-  const altitude = Number(ac.alt_baro);
+    const alt = Number(ac.alt_baro);
 
-  return !isNaN(altitude) && altitude > 0;
-
-});
-
-res.setHeader("Access-Control-Allow-Origin", "*");
-res.setHeader("Cache-Control", "s-maxage=60");
+    return !isNaN(alt) && alt > 0;
+  })
+  .slice(0, 1000);
 
 res.status(200).json({
   success: true,
   aircraft,
-  total: aircraft.length,
-  collectedAt: new Date().toISOString()
+  total: aircraft.length
 });
 ```
 
 } catch (err) {
 
 ```
-console.error(err);
-
 res.status(500).json({
   success: false,
-  error: err.message
+  error: String(err)
 });
 ```
 
