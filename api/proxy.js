@@ -1,8 +1,11 @@
 export default async function handler(req, res) {
   try {
-    const response = await fetch("https://opensky-network.org");
-    res.status(200).json({ status: response.status, ok: response.ok });
+    const response = await fetch("https://api.adsb.lol/v2/ladd");
+    const data = await response.json();
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json(data);
   } catch (err) {
-    res.status(500).json({ error: err.message, cause: err.cause?.message });
+    res.status(500).json({ error: err.message });
   }
 }
