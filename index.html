@@ -539,7 +539,7 @@
 
     async function fetchAndRender() {
       try {
-        const url = `https://${OPENSKY_USERNAME}:${OPENSKY_PASSWORD}@opensky-network.org/api/states/all`;
+        const url = "/.netlify/functions/opensky";
         const res = await fetch(url);
         if (!res.ok) throw new Error('API error ' + res.status);
         const json = await res.json();
