@@ -449,169 +449,178 @@
     </div>
   </main>
 
-  <script>
-    // ── CLOCK ──
-    function updateClock() {
-      const n = new Date();
-      const t = [n.getUTCHours(), n.getUTCMinutes(), n.getUTCSeconds()]
-        .map(v => String(v).padStart(2, '0')).join(':');
-      document.getElementById('clock').textContent = 'UTC ' + t;
-    }
-    updateClock();
-    setInterval(updateClock, 1000);
+<script>
+const AIRLINE_MAP = {
+  AAL:'American Airlines',
+  UAL:'United Airlines',
+  DAL:'Delta Air Lines',
+  SWA:'Southwest',
+  RYR:'Ryanair',
+  EZY:'easyJet',
+  UAE:'Emirates',
+  QFA:'Qantas',
+  SIA:'Singapore Airlines',
+  BAW:'British Airways',
+  DLH:'Lufthansa',
+  AFR:'Air France',
+  KLM:'KLM',
+  THY:'Turkish Airlines',
+  WZZ:'Wizz Air',
+  VOZ:'Virgin Australia',
+  JST:'Jetstar'
+};
 
-    // ── NAV ──
-    document.querySelectorAll('.nav-item').forEach(el => {
-      el.addEventListener('click', e => {
-        e.preventDefault();
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        el.classList.add('active');
-      });
+const SHORT_HAUL = [
+ 'A318','A319','A320','A321',
+ 'A20N','A21N',
+ 'B737','B738','B739',
+ 'B38M','B39M',
+ 'E170','E175','E190','E195',
+ 'CRJ2','CRJ7','CRJ9',
+ 'AT76','DH8D'
+];
+
+const LONG_HAUL = [
+ 'A332','A333','A338','A339',
+ 'A359','A35K','A388',
+ 'B744','B748',
+ 'B772','B773','B77W',
+ 'B788','B789','B78X',
+ 'B762','B763'
+];
+
+function renderList(containerId, items){
+
+  if(!items.length){
+    document.getElementById(containerId).innerHTML =
+      '<div class="loading-state">No Data</div>';
+    return;
+  }
+
+  const max = items[0][1];
+
+  document.getElementById(containerId).innerHTML = `
+    <div class="rank-list">
+      ${items.map(([name,count],i)=>`
+        <div class="rank-item">
+          <div class="rank-num">${i+1}</div>
+
+          <div class="rank-info">
+            <div class="rank-name">${name}</div>
+
+            <div class="rank-bar-track">
+              <div
+                class="rank-bar-fill"
+                style="width:${(count/max)*100}%">
+              </div>
+            </div>
+          </div>
+
+          <div class="rank-count">
+            ${count.toLocaleString()}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function loadDashboard(){
+
+  try{
+
+    const res = await fetch('/api/europe');
+
+    const json = await res.json();
+
+    const aircraft = json.aircraft || [];
+
+    document.getElementById('kpi-total').textContent =
+      aircraft.length.toLocaleString();
+
+    const airlines = {};
+    const shorthaul = {};
+    const longhaul = {};
+
+    aircraft.forEach(ac=>{
+
+      const flight =
+        (ac.flight || '')
+          .trim()
+          .substring(0,3)
+          .toUpperCase();
+
+      if(flight){
+
+        const airline =
+          AIRLINE_MAP[flight] || flight;
+
+        airlines[airline] =
+          (airlines[airline] || 0) + 1;
+      }
+
+      const type =
+        (ac.t || '')
+          .trim()
+          .toUpperCase();
+
+      if(SHORT_HAUL.includes(type)){
+        shorthaul[type] =
+          (shorthaul[type] || 0) + 1;
+      }
+
+      if(LONG_HAUL.includes(type)){
+        longhaul[type] =
+          (longhaul[type] || 0) + 1;
+      }
+
     });
 
-    // ── AIRLINE CALLSIGN MAP ──
-    const AIRLINE_MAP = {
-      'AAL': 'American Airlines',    'UAL': 'United Airlines',
-      'DAL': 'Delta Air Lines',      'SWA': 'Southwest',
-      'RYR': 'Ryanair',             'EZY': 'easyJet',
-      'UAE': 'Emirates',             'QFA': 'Qantas',
-      'SIA': 'Singapore Airlines',   'BAW': 'British Airways',
-      'DLH': 'Lufthansa',           'AFR': 'Air France',
-      'KLM': 'KLM',                 'ANA': 'ANA',
-      'JAL': 'Japan Airlines',       'CPA': 'Cathay Pacific',
-      'IGO': 'IndiGo',              'AXM': 'AirAsia',
-      'THA': 'Thai Airways',         'ETH': 'Ethiopian',
-      'MSR': 'EgyptAir',            'SVA': 'Saudia',
-      'THY': 'Turkish Airlines',     'AFL': 'Aeroflot',
-      'CSN': 'China Southern',       'CCA': 'Air China',
-      'CHH': 'Hainan Airlines',      'CES': 'China Eastern',
-      'KAL': 'Korean Air',           'AAR': 'Asiana',
-      'VOZ': 'Virgin Australia',     'JST': 'Jetstar',
-      'WJA': 'WestJet',             'NKS': 'Spirit',
-      'FFT': 'Frontier',            'WZZ': 'Wizz Air',
-      'VLG': 'Vueling',             'IBE': 'Iberia',
-      'TAP': 'TAP Portugal',         'EIN': 'Aer Lingus',
-      'TOM': 'TUI Airways',          'EXS': 'Jet2',
-    };
+    renderList(
+      'airlines-list',
+      Object.entries(airlines)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,10)
+    );
 
-    // ── AIRCRAFT TYPE MAP ──
-    const SHORT_HAUL_TYPES = {
-      'B737': 'Boeing 737',    'B738': 'Boeing 737-800',
-      'B739': 'Boeing 737-900','B38M': 'Boeing 737 MAX 8',
-      'B39M': 'Boeing 737 MAX 9',
-      'A318': 'Airbus A318',   'A319': 'Airbus A319',
-      'A320': 'Airbus A320',   'A321': 'Airbus A321',
-      'A20N': 'Airbus A320neo','A21N': 'Airbus A321neo',
-      'E170': 'Embraer 170',   'E175': 'Embraer 175',
-      'E190': 'Embraer 190',   'E195': 'Embraer 195',
-      'CRJ2': 'CRJ-200',       'CRJ7': 'CRJ-700',
-      'CRJ9': 'CRJ-900',       'DH8D': 'Dash 8-400',
-      'AT76': 'ATR 72-600',    'B712': 'Boeing 717',
-    };
+    renderList(
+      'shorthaul-list',
+      Object.entries(shorthaul)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,10)
+    );
 
-    const LONG_HAUL_TYPES = {
-      'B744': 'Boeing 747-400', 'B748': 'Boeing 747-8',
-      'B772': 'Boeing 777-200', 'B773': 'Boeing 777-300',
-      'B77W': 'Boeing 777-300ER','B788': 'Boeing 787-8',
-      'B789': 'Boeing 787-9',   'B78X': 'Boeing 787-10',
-      'A332': 'Airbus A330-200','A333': 'Airbus A330-300',
-      'A338': 'Airbus A330-800','A339': 'Airbus A330-900',
-      'A343': 'Airbus A340-300','A345': 'Airbus A340-500',
-      'A346': 'Airbus A340-600','A359': 'Airbus A350-900',
-      'A35K': 'Airbus A350-1000','A388': 'Airbus A380',
-      'B762': 'Boeing 767-200', 'B763': 'Boeing 767-300',
-    };
+    renderList(
+      'longhaul-list',
+      Object.entries(longhaul)
+        .sort((a,b)=>b[1]-a[1])
+        .slice(0,10)
+    );
 
-    // ── RENDER RANK LIST ──
-    function renderList(containerId, items) {
-      const max = items[0]?.[1] || 1;
-      document.getElementById(containerId).innerHTML = `
-        <div class="rank-list">
-          ${items.map(([name, count], i) => `
-            <div class="rank-item">
-              <div class="rank-num">${i + 1}</div>
-              <div class="rank-info">
-                <div class="rank-name">${name}</div>
-                <div class="rank-bar-track">
-                  <div class="rank-bar-fill" style="width:${Math.round((count/max)*100)}%"></div>
-                </div>
-              </div>
-              <div class="rank-count">${count.toLocaleString()}</div>
-            </div>
-          `).join('')}
-        </div>`;
-    }
+    const now = new Date();
 
-    // ── FETCH & RENDER ──
-    async function fetchAndRender() {
-      try {
-       const res = await fetch("/api/proxy");
-        if (!res.ok) throw new Error('API error ' + res.status);
-        const json = await res.json();
+    document.getElementById(
+      'last-updated'
+    ).textContent =
+      'Last updated UTC ' +
+      now.toISOString().substring(11,19);
 
-        const aircraft = json.ac || [];
-        const airborne = aircraft.filter(a => a.alt_baro !== "ground" && a.alt_baro > 0);
+  }catch(err){
 
-        // Total count
-        document.getElementById('kpi-total').textContent = airborne.length.toLocaleString();
+    document.getElementById(
+      'last-updated'
+    ).textContent =
+      'Error: ' + err.message;
+  }
+}
 
-        // ── TOP 5 AIRLINES ──
-        const airlineCounts = {};
-        airborne.forEach(a => {
-          const cs = (a.flight || '').trim().substring(0, 3).toUpperCase();
-          if (!cs || cs.length < 3) return;
-          const name = AIRLINE_MAP[cs] || cs;
-          airlineCounts[name] = (airlineCounts[name] || 0) + 1;
-        });
-        const top5Airlines = Object.entries(airlineCounts)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5);
-        renderList('airlines-list', top5Airlines);
+loadDashboard();
 
-        // ── TOP 5 SHORT HAUL ──
-        const shortCounts = {};
-        airborne.forEach(a => {
-          const type = (a.t || '').trim().toUpperCase();
-          if (SHORT_HAUL_TYPES[type]) {
-            const name = SHORT_HAUL_TYPES[type];
-            shortCounts[name] = (shortCounts[name] || 0) + 1;
-          }
-        });
-        const top5Short = Object.entries(shortCounts)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5);
-        renderList('shorthaul-list', top5Short.length ? top5Short : [['No data', 0]]);
-
-        // ── TOP 5 LONG HAUL ──
-        const longCounts = {};
-        airborne.forEach(a => {
-          const type = (a.t || '').trim().toUpperCase();
-          if (LONG_HAUL_TYPES[type]) {
-            const name = LONG_HAUL_TYPES[type];
-            longCounts[name] = (longCounts[name] || 0) + 1;
-          }
-        });
-        const top5Long = Object.entries(longCounts)
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 5);
-        renderList('longhaul-list', top5Long.length ? top5Long : [['No data', 0]]);
-
-        // Timestamp
-        const now = new Date();
-        const ts = [now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()]
-          .map(v => String(v).padStart(2,'0')).join(':');
-        document.getElementById('last-updated').textContent = 'Last updated UTC ' + ts;
-
-      } catch (err) {
-        document.getElementById('kpi-total').textContent = '—';
-        document.getElementById('last-updated').textContent = 'Error: ' + err.message;
-      }
-    }
-
-    // Fetch on load, then every 60 seconds to avoid rate limiting
-    fetchAndRender();
-    setInterval(fetchAndRender, 300000);
-  </script>
+setInterval(
+  loadDashboard,
+  300000
+);
+</script>
 
 </body>
 </html>
